@@ -23,35 +23,36 @@
             --dark-color: #0f0f13;
             --dark-2: #1a1a24;
             --dark-3: #252532;
-            --light-color: #f8f9fa;
-            --text-muted: #8a8a9a;
+            --text-bright: #e5e7eb;
+            --text-muted: #b5b5c0;
         }
         
         body {
             background-color: var(--dark-color);
             font-family: 'Poppins', sans-serif;
-            color: var(--light-color);
+            color: var(--text-bright);
+        }
+
+        h1, h2, h3, h4, h5, h6, a {
+            color: var(--text-bright);
+        }
+        a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar {
+            background-color: var(--dark-2);
+            border-bottom: 1px solid var(--dark-3);
         }
         
-        .bg-dark-2 {
-            background-color: var(--dark-2) !important;
-        }
-        
-        .bg-dark-3 {
-            background-color: var(--dark-3) !important;
-        }
+        .bg-dark-2 { background-color: var(--dark-2) !important; }
+        .bg-dark-3 { background-color: var(--dark-3) !important; }
         
         .text-gradient {
             background: linear-gradient(45deg, var(--primary-color), #a29bfe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
-            letter-spacing: 1px;
         }
         
         .card {
@@ -61,44 +62,29 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
-        }
-        
-        .form-control {
+        .form-control, .form-select {
             background-color: var(--dark-3);
             border: 1px solid var(--dark-3);
-            color: var(--light-color);
-            transition: all 0.3s ease;
+            color: var(--text-bright);
         }
-        
-        .form-control:focus {
+
+        /* --- PERBAIKAN UNTUK DROPDOWN --- */
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b5b5c0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        }
+        .form-select:focus {
             background-color: var(--dark-3);
-            color: var(--light-color);
+            color: var(--text-bright);
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
         }
         
         .nav-link {
             color: var(--text-muted);
-            transition: all 0.3s ease;
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin: 5px 0;
         }
         
         .nav-link:hover, .nav-link.active {
-            color: var(--light-color);
+            color: var(--text-bright);
             background-color: rgba(108, 92, 231, 0.1);
         }
         
@@ -108,57 +94,69 @@
         }
         
         .sidebar {
-            min-height: calc(100vh - 70px);
+            height: 100vh;
+            position: sticky;
+            top: 0;
             background: var(--dark-2);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .text-muted {
+        .text-muted, p.text-muted, span.small.text-muted, .card-header, .form-label {
             color: var(--text-muted) !important;
-        }
-        
-        .border-bottom {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--dark-2);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
-        }
-        
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade {
-            animation: fadeIn 0.5s ease forwards;
         }
     </style>
     
-    @yield('styles')
+    @stack('styles')
 </head>
 <body>
-    @yield('content')
+    <div id="app">
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                    <i class="fas fa-leaf me-2"></i>Sadar Diri
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto"></ul>
+                    <ul class="navbar-nav ms-auto">
+                        @guest
+                            @if (Route::has('login'))
+                                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                            @endif
+                            @if (Route::has('register'))
+                                <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                            @endif
+                        @else
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <i class="fas fa-user-circle me-2"></i>{{ Auth::user()->name }}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Pengaturan</a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="fas fa-sign-out-alt me-2"></i>{{ __('Logout') }}
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            @yield('content')
+        </main>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script>
-        // CSRF token for AJAX requests
-        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    </script>
-    
-    @yield('scripts')
+    @stack('scripts')
 </body>
 </html>

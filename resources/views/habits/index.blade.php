@@ -20,8 +20,8 @@
             </div>
 
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeIn">
-                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -29,9 +29,8 @@
             <div class="row g-4">
                 @forelse($habits as $habit)
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card habit-card border-0 shadow-lg h-100" 
-                         style="border-left: 4px solid {{ $habit->color }};">
-                        <div class="card-body">
+                    <div class="card habit-card border-0 shadow-lg h-100" style="border-left: 4px solid {{ $habit->color }};">
+                        <div class="card-body d-flex flex-column">
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <div class="habit-icon me-3" style="color: {{ $habit->color }};">
@@ -43,63 +42,44 @@
                                     </div>
                                 </div>
                                 <div class="dropdown">
-                                    <button class="btn btn-link text-muted" type="button" 
-                                            data-bs-toggle="dropdown">
+                                    <button class="btn btn-link text-white-50" type="button" data-bs-toggle="dropdown">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark">
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('habits.show', $habit->id) }}">
-                                                <i class="fas fa-eye me-2"></i>Detail
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('habits.edit', $habit->id) }}">
-                                                <i class="fas fa-edit me-2"></i>Edit
-                                            </a>
-                                        </li>
+                                        <li><a class="dropdown-item" href="{{ route('habits.show', $habit->id) }}"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('habits.edit', $habit->id) }}"><i class="fas fa-edit me-2"></i>Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <button class="dropdown-item text-danger" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#deleteModal"
-                                                    data-habit-id="{{ $habit->id }}"
-                                                    data-habit-name="{{ $habit->name }}">
+                                            <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-habit-id="{{ $habit->id }}" data-habit-name="{{ $habit->name }}">
                                                 <i class="fas fa-trash-alt me-2"></i>Hapus
                                             </button>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-
+                            
+                            <!-- Perbaikan di sini: menggunakan kelas text-muted -->
                             <p class="text-muted mt-3">{{ $habit->description ?: 'Tidak ada deskripsi' }}</p>
 
-                            <div class="progress mb-3" style="height: 8px;">
-                                <div class="progress-bar" role="progressbar" 
-                                     style="width: {{ $habit->getCompletionPercentage() }}%; 
-                                            background-color: {{ $habit->color }};">
+                            <div class="mt-auto">
+                                <div class="progress mb-3" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ $habit->getCompletionPercentage() }}%; background-color: {{ $habit->color }};"></div>
                                 </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="small text-muted">
-                                    {{ $habit->logs_count }} dari {{ $habit->target_count }} target
-                                </span>
-                                <span class="badge bg-dark">
-                                    {{ round($habit->getCompletionPercentage()) }}%
-                                </span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small text-muted">{{ $habit->logs->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])->count() }} / {{ $habit->target_count }}</span>
+                                    <span class="badge bg-dark">{{ round($habit->getCompletionPercentage()) }}%</span>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer bg-dark-2 border-0">
                             <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar-day me-1"></i>
-                                    {{ $habit->created_at->format('d M Y') }}
-                                </small>
-                                <button class="btn btn-sm {{ $habit->is_today_completed ? 'btn-success' : 'btn-outline-secondary' }}"
-                                        onclick="toggleHabit({{ $habit->id }})">
-                                    <i class="fas fa-{{ $habit->is_today_completed ? 'check' : 'plus' }}"></i>
-                                </button>
+                                <small class="text-muted"><i class="fas fa-calendar-day me-1"></i>{{ $habit->created_at->format('d M Y') }}</small>
+                                <form action="{{ route('habits.toggle', $habit) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm {{ $habit->logs->contains('date', today()->toDateString()) ? 'btn-success' : 'btn-outline-secondary' }}">
+                                        <i class="fas fa-{{ $habit->logs->contains('date', today()->toDateString()) ? 'check' : 'plus' }}"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -110,16 +90,13 @@
                         <i class="fas fa-check-circle fa-4x text-muted mb-4"></i>
                         <h3 class="h4 text-muted">Belum ada kebiasaan</h3>
                         <p class="text-muted">Mulai dengan menambahkan kebiasaan baru</p>
-                        <a href="{{ route('habits.create') }}" class="btn btn-primary rounded-pill px-4">
-                            <i class="fas fa-plus me-2"></i>Tambah Kebiasaan
-                        </a>
+                        <a href="{{ route('habits.create') }}" class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i>Tambah Kebiasaan</a>
                     </div>
                 </div>
                 @endforelse
             </div>
-
             @if($habits->hasPages())
-            <div class="mt-4">
+            <div class="mt-4 d-flex justify-content-center">
                 {{ $habits->links() }}
             </div>
             @endif
@@ -127,102 +104,49 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- Modal Konfirmasi Hapus -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark-2 border-0">
             <div class="modal-header border-0">
-                <h5 class="modal-title text-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Penghapusan
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Penghapusan</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p class="lead">Anda yakin ingin menghapus kebiasaan "<strong id="habitName"></strong>"?</p>
-                <p class="text-muted small">Semua data terkait kebiasaan ini akan terhapus permanen dan tidak dapat dikembalikan.</p>
+                <p>Anda yakin ingin menghapus kebiasaan "<strong id="habitName"></strong>"?</p>
+                <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Batal
-                </button>
-                <form id="deleteForm" method="POST">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
+                <form id="deleteForm" method="POST" action="">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger rounded-pill">
-                        <i class="fas fa-trash-alt me-2"></i>Ya, Hapus
-                    </button>
+                    <button type="submit" class="btn btn-danger rounded-pill">Ya, Hapus</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
-    // Delete Modal Handler
-    const deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const habitId = button.getAttribute('data-habit-id');
-        const habitName = button.getAttribute('data-habit-name');
-        
-        document.getElementById('habitName').textContent = habitName;
-        document.getElementById('deleteForm').action = `/habits/${habitId}`;
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteModalEl = document.getElementById('deleteModal');
+        if (deleteModalEl) {
+            deleteModalEl.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const habitId = button.getAttribute('data-habit-id');
+                const habitName = button.getAttribute('data-habit-name');
+                const form = deleteModalEl.querySelector('#deleteForm');
+                let urlTemplate = "{{ route('habits.destroy', ['habit' => ':id']) }}";
+                let finalUrl = urlTemplate.replace(':id', habitId);
+                form.setAttribute('action', finalUrl);
+                deleteModalEl.querySelector('#habitName').textContent = habitName;
+            });
+        }
     });
-
-    // Toggle Habit Completion
-    function toggleHabit(habitId) {
-        fetch(`/habits/${habitId}/toggle`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                window.location.reload();
-            }
-        });
-    }
 </script>
-
-<style>
-    .habit-card {
-        transition: all 0.3s ease;
-        background-color: var(--dark-2);
-    }
-    
-    .habit-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    .habit-icon {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background-color: rgba(var(--primary-rgb), 0.1);
-    }
-    
-    .progress {
-        background-color: var(--dark-3);
-        border-radius: 4px;
-    }
-    
-    .dropdown-menu-dark {
-        background-color: var(--dark-3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .dropdown-item:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-</style>
-@endsection
+@endpush

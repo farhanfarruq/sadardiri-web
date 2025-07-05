@@ -14,7 +14,6 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // Daftarkan HabitPolicy di sini
         Habit::class => HabitPolicy::class,
     ];
 
@@ -23,8 +22,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerPolicies();
-
         //
     }
 }

@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Dashboard pakai HomeController
-    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Habits
     Route::resource('habits', HabitController::class);

@@ -1,20 +1,23 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\User;
-use App\Models\Category;
-use App\Models\HabitLog;
-
+use Carbon\Carbon;
 
 class Habit extends Model
 {
     protected $fillable = [
         'user_id', 'name', 'description', 'icon', 'frequency', 
         'target_count', 'color', 'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -27,49 +30,50 @@ class Habit extends Model
         return $this->hasMany(HabitLog::class);
     }
 
-    public function getCompletionPercentage($startDate, $endDate)
+    public function getCompletionPercentage($startDate = null, $endDate = null)
     {
-        $totalDays = $startDate->diffInDays($endDate) + 1;
-        $completedDays = $this->logs()
+        $startDate = $startDate ?? Carbon::now()->startOfMonth();
+        $endDate = $endDate ?? Carbon::now()->endOfMonth();
+
+        $logsInPeriod = $this->logs()
             ->whereBetween('date', [$startDate, $endDate])
             ->count();
+
+        if ($this->target_count <= 0) {
+            return 0;
+        }
+
+        $percentage = ($logsInPeriod / $this->target_count) * 100;
         
-        return $totalDays > 0 ? ($completedDays / $totalDays) * 100 : 0;
+        return min($percentage, 100); // Pastikan tidak lebih dari 100%
     }
 
     public function getCurrentStreak()
     {
-        $logs = $this->logs()
-            ->orderBy('date', 'desc')
-            ->get();
+        $logs = $this->logs()->where('date', '<=', today())->orderBy('date', 'desc')->pluck('date');
         
+        if ($logs->isEmpty()) {
+            return 0;
+        }
+
         $streak = 0;
         $currentDate = today();
-        
-        foreach ($logs as $log) {
-            if ($log->date->eq($currentDate)) {
+
+        // Cek apakah hari ini sudah dicatat. Jika belum, mulai dari kemarin.
+        if (!$logs->contains(fn($date) => $date->isSameDay($currentDate))) {
+            $currentDate->subDay();
+        }
+
+        foreach ($logs as $logDate) {
+            if ($logDate->isSameDay($currentDate)) {
                 $streak++;
-                $currentDate = $currentDate->subDay();
-            } else {
+                $currentDate->subDay();
+            } elseif ($logDate->lt($currentDate)) {
+                // Berhenti jika ada hari yang terlewat
                 break;
             }
         }
         
         return $streak;
     }
-
-        public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-        public function habitLogs(): HasMany
-    {
-        return $this->hasMany(HabitLog::class);
-    }
-
-    public function habits()
-{
-    return $this->hasMany(Habit::class);
-}
 }
