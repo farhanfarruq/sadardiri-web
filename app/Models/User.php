@@ -6,7 +6,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Habit;
 
 class User extends Authenticatable
 {
@@ -48,18 +47,26 @@ class User extends Authenticatable
     }
 
     public function habits()
-{
-    return $this->hasMany(Habit::class);
-}
+    {
+        return $this->hasMany(Habit::class);
+    }
 
-public function habitLogs()
-{
-    return $this->hasMany(HabitLog::class);
-}
+    public function habitLogs()
+    {
+        return $this->hasMany(HabitLog::class);
+    }
 
-public function transactions()
-{
-    return $this->hasMany(Transaction::class);
-}
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 
+    /**
+     * PERBAIKAN DI SINI: Tambahkan fungsi ini
+     * Mendefinisikan relasi one-to-many ke model SavingsTarget.
+     */
+    public function savingsTargets()
+    {
+        return $this->hasMany(SavingsTarget::class);
+    }
 }

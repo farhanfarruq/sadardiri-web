@@ -104,55 +104,57 @@
         .text-muted, p.text-muted, span.small.text-muted, .card-header, .form-label {
             color: var(--text-muted) !important;
         }
+
+        /* Target semua teks dalam list-group-item, khususnya untuk kebiasaan */
+.list-group-item.bg-dark-2 div {
+    color: var(--text-bright) !important;
+    opacity: 1 !important;
+    font-weight: 500;
+}
+
+
+</style>
     </style>
     
-    @stack('styles')
+    @yield('styles')
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-dark shadow-sm">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ route('dashboard') }}">
-                    <i class="fas fa-leaf me-2"></i>Sadar Diri
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto"></ul>
-                    <ul class="navbar-nav ms-auto">
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                            @endif
-                            @if (Route::has('register'))
-                                <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fas fa-user-circle me-2"></i>{{ Auth::user()->name }}
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Pengaturan</a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="fas fa-sign-out-alt me-2"></i>{{ __('Logout') }}
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
-                                </div>
-                            </li>
-                        @endguest
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ route('dashboard') }}">
+                <i class="fas fa-leaf me-2"></i>Sadar Diri
+            </a>
+            <div class="ms-auto">
+                @auth
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-2"></i>
+                        {{ Auth::user()->name }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('settings.index') }}">
+                                <i class="fas fa-cog fa-fw me-2"></i>Pengaturan
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="fas fa-sign-out-alt fa-fw me-2"></i>Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
                     </ul>
                 </div>
+                @endauth
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <main>
-            @yield('content')
-        </main>
-    </div>
+    @yield('content')
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

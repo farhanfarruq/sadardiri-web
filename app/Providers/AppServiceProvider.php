@@ -2,29 +2,23 @@
 
 namespace App\Providers;
 
-use App\Models\Habit;
-use App\Policies\HabitPolicy;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class AuthServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
+     * Register any application services.
      */
-    protected $policies = [
-        // Daftarkan HabitPolicy di sini
-        Habit::class => HabitPolicy::class,
-    ];
+    public function register(): void
+    {
+        //
+    }
 
     /**
-     * Register any authentication / authorization services.
+     * Bootstrap any application services.
      */
     public function boot(): void
     {
-        $this->registerPolicies();
-
         //
     }
 }

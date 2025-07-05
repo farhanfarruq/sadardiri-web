@@ -106,11 +106,11 @@
 </div>
 
 <style>
-
     /* --- PERBAIKAN WARNA JUDUL KARTU --- */
-.card .card-title {
-    color: var(--text-bright) !important;
-}
+    .card .card-title {
+        color: var(--text-bright) !important;
+    }
+
     .icon-circle-lg {
         width: 80px;
         height: 80px;
@@ -137,7 +137,5 @@
     .breadcrumb-item.active {
         color: var(--text-bright);
     }
-
-    
 </style>
 @endsection

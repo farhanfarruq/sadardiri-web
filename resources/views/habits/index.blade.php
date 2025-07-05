@@ -128,6 +128,12 @@
     </div>
 </div>
 
+<style>
+    .habit-card h3 {
+    color: var(--text-bright) !important;
+}
+</style>
+
 
 @endsection
 
