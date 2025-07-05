@@ -42,7 +42,8 @@ class HabitController extends Controller
             'icon' => 'required|string|max:50', // Batas karakter dinaikkan
             'frequency' => 'required|in:daily,weekly,monthly',
             'target_count' => 'required|integer|min:1',
-            'color' => 'required|string|size:7'
+            'color' => 'required|string|size:7',
+            'icon' => 'required|string|max:255'
         ]);
 
         Auth::user()->habits()->create($validated);
@@ -94,7 +95,8 @@ class HabitController extends Controller
             'icon' => 'required|string|max:50', // Batas karakter dinaikkan
             'frequency' => 'required|in:daily,weekly,monthly',
             'target_count' => 'required|integer|min:1',
-            'color' => 'required|string|size:7'
+            'color' => 'required|string|size:7',
+            'icon' => 'required|string|max:255'
         ]);
 
         $habit->update($validated);

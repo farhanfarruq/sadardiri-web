@@ -14,12 +14,15 @@ return [
     |
     */
 
-    'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
     ],
 
-    'resend' => [
-        'key' => env('RESEND_KEY'),
+    'postmark' => [
+        'token' => env('POSTMARK_TOKEN'),
     ],
 
     'ses' => [
@@ -28,11 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'slack' => [
-        'notifications' => [
-            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
-            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
-        ],
+    // --- PERBAIKAN DI SINI ---
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),         // Gunakan nama variabel, bukan nilainya
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'), // Gunakan nama variabel, bukan nilainya
+        'redirect' => env('GOOGLE_REDIRECT_URI'),       // Gunakan nama variabel, bukan nilainya
     ],
 
 ];

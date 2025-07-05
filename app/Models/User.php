@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_id', // Tambahkan google_id
+        'avatar',    // Tambahkan avatar
     ];
 
     /**
@@ -69,4 +71,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(SavingsTarget::class);
     }
+
+
+    
 }

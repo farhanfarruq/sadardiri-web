@@ -5,29 +5,39 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
+        {{-- Memasukkan sidebar untuk konsistensi layout --}}
         @include('partials.sidebar')
-        <div class="col-lg-9 col-xl-10 ms-sm-auto px-md-4 py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h2 text-gradient">Tambah Kategori Baru</h1>
-                <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Kembali
-                </a>
+
+        {{-- Konten utama dengan kelas kolom yang benar --}}
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Tambah Kategori Baru</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{{ route('categories.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Kembali
+                    </a>
+                </div>
             </div>
-            <div class="card bg-dark-2 border-0">
-                <div class="card-body p-4">
+
+            <div class="card bg-dark text-white border-secondary">
+                <div class="card-header border-secondary">
+                    Formulir Kategori
+                </div>
+                <div class="card-body">
                     <form action="{{ route('categories.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama Kategori</label>
-                            <input type="text" class="form-control bg-dark-3 border-0 text-white" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="mb-3">
                             <label for="icon" class="form-label">Ikon (contoh: fas fa-shopping-cart)</label>
-                            <input type="text" class="form-control bg-dark-3 border-0 text-white" id="icon" name="icon" placeholder="Lihat Font Awesome 5" required>
+                            <input type="text" class="form-control" id="icon" name="icon" placeholder="Lihat di Font Awesome 5" required>
                         </div>
                         <div class="mb-3">
                             <label for="color" class="form-label">Warna</label>
-                            <input type="color" class="form-control form-control-color bg-dark-3 border-0" id="color" name="color" value="#ff6347" required>
+                            <input type="color" class="form-control form-control-color" id="color" name="color" value="#ff6347" title="Pilih warna Anda" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Tipe</label>
@@ -42,22 +52,11 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg">Simpan Kategori</button>
+                        <button type="submit" class="btn btn-primary">Simpan Kategori</button>
                     </form>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 </div>
-
-
-@push('styles')
-<style>
-    .form-check-label {
-        color: var(--light-color) !important;
-    }
-</style>
 @endsection
-
-
-@endpush

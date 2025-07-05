@@ -8,13 +8,17 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HabitController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\CategoryController; // <-- Kemungkinan baris ini yang hilang
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SavingsTargetController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
-
+use App\Http\Controllers\Auth\GoogleLoginController; // <-- Tambahkan import ini
 
 Auth::routes();
+
+// Google Auth Routes - HARUS DI LUAR MIDDLEWARE AUTH
+Route::get('auth/google', [GoogleLoginController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback']);
 
 Route::middleware('auth')->group(function () {
     // Redirect root ke dashboard

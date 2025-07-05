@@ -11,7 +11,7 @@ class Habit extends Model
 {
     protected $fillable = [
         'user_id', 'name', 'description', 'icon', 'frequency', 
-        'target_count', 'color', 'is_active'
+        'target_count', 'color', 'is_active', 'icon'
     ];
 
     protected $casts = [
