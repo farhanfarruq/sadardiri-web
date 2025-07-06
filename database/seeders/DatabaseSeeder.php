@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
         // Hapus atau beri komentar pada pembuatan user dummy jika tidak perlu
         // User::factory(10)->create();
 
-        User::factory()->create([
+        /**User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-        ]);
+        ]);*//
 
         // PERBARUAN: Panggil CategorySeeder di sini
         $this->call([
