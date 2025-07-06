@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         /**User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-        ]);*//
+        ]);*/
 
         // PERBARUAN: Panggil CategorySeeder di sini
         $this->call([
