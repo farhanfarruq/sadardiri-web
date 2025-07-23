@@ -38,8 +38,8 @@ Untuk menjalankan proyek ini di lingkungan lokal Anda, ikuti langkah-langkah ber
 
 1.  **Clone Repository**
     ```bash
-    git clone [https://github.com/nama-anda/nama-repo.git](https://github.com/nama-anda/nama-repo.git)
-    cd nama-repo
+    git clone [https://github.com/farhanfarruq/sadardiri-web](https://github.com/farhanfarruq/sadardiri-web)
+    cd sadardiri-web
     ```
 
 2.  **Instal Dependensi PHP**
