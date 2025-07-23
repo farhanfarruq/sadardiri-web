@@ -1,61 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+SadarDiri: Aplikasi Pelacak Keuangan dan Kebiasaan
+SadarDiri adalah aplikasi web yang dirancang untuk membantu pengguna mengelola keuangan pribadi dan membangun kebiasaan positif. Proyek ini dikembangkan sebagai tugas akhir semester untuk mata kuliah Rekayasa Web.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi ini menyediakan antarmuka yang bersih dan modern untuk melacak pemasukan, pengeluaran, progres tabungan, dan konsistensi dalam menjalankan kebiasaan harian.
 
-## About Laravel
+## ✨ Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Dashboard Utama: Menampilkan ringkasan statistik harian dan bulanan, termasuk kebiasaan yang harus diselesaikan, total pemasukan/pengeluaran bulan ini, dan grafik progres mingguan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Manajemen Keuangan:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Pencatatan transaksi pemasukan dan pengeluaran.
 
-## Learning Laravel
+Kustomisasi kategori untuk setiap transaksi.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Riwayat transaksi dengan tampilan desktop dan mobile yang responsif.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Pelacak Kebiasaan (Habit Tracker):
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Membuat kebiasaan baru dengan frekuensi harian, mingguan, atau bulanan.
 
-## Laravel Sponsors
+Melacak progres harian dan melihat streak (rentetan) keberhasilan.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Visualisasi progres bulanan untuk setiap kebiasaan.
 
-### Premium Partners
+Target Tabungan:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Menetapkan target tabungan dengan jumlah dan tanggal target.
 
-## Contributing
+Memantau progres tabungan secara visual.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Laporan Aktivitas: Melihat gabungan riwayat aktivitas keuangan dan kebiasaan dalam satu halaman.
 
-## Code of Conduct
+Autentikasi Pengguna: Sistem pendaftaran dan login yang aman menggunakan email & kata sandi, serta opsi login melalui Google OAuth.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Antarmuka Responsif: Desain yang dioptimalkan untuk pengalaman pengguna yang baik di perangkat desktop maupun mobile.
 
-## Security Vulnerabilities
+💻 Teknologi yang Digunakan
+Backend: PHP, Laravel Framework 11
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Frontend: HTML, CSS, JavaScript, Bootstrap 5
 
-## License
+Database: SQLite (default), MySQL, MariaDB, PostgreSQL
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Development Tools: Vite, Composer, NPM
+
+Paket Tambahan:
+
+laravel/socialite untuk autentikasi Google
+
+barryvdh/laravel-dompdf untuk potensi ekspor laporan ke PDF
+
+🚀 Instalasi & Konfigurasi Lokal
+Untuk menjalankan proyek ini di lingkungan lokal Anda, ikuti langkah-langkah berikut:
+
+Clone Repository
+
+Bash
+
+git clone https://github.com/farhanfarruq/sadardiri-web.git
+cd sadardiri-web
+Instal Dependensi PHP
+
+Bash
+
+composer install
+Konfigurasi Lingkungan
+
+Salin file .env.example menjadi .env.
+
+Bash
+
+cp .env.example .env
+Buat application key baru.
+
+Bash
+
+php artisan key:generate
+Konfigurasikan koneksi database Anda di dalam file .env (misalnya, untuk MySQL).
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sadardiri
+DB_USERNAME=root
+DB_PASSWORD=
+Migrasi dan Seeding Database
+Jalankan migrasi untuk membuat tabel dan seeder untuk mengisi kategori awal.
+
+Bash
+
+php artisan migrate --seed
+Instal Dependensi JavaScript
+
+Bash
+
+npm install
+Jalankan Server Pengembangan
+
+Jalankan Vite untuk compiling assets frontend.
+
+Bash
+
+npm run dev
+Di terminal lain, jalankan server pengembangan Laravel.
+
+Bash
+
+php artisan serve
+Selesai!
+Aplikasi sekarang dapat diakses di http://localhost:8000.
+
+🧑‍💻 Kontributor
+Nama: Farhan Farruq
+
+NIM: [Masukkan NIM Anda]
+
+Mata Kuliah: Rekayasa Web - Tugas Akhir Semester
