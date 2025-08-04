@@ -12,7 +12,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SavingsTargetController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\Auth\GoogleLoginController; // <-- Tambahkan import ini
+use App\Http\Controllers\Auth\GoogleLoginController;
+use App\Http\Controllers\PredictionController;
 
 Auth::routes();
 
@@ -33,8 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('habits', HabitController::class);
     Route::post('habits/{habit}/toggle', [HabitController::class, 'toggle'])->name('habits.toggle');
 
-    // Transactions
-    Route::resource('transactions', TransactionController::class)->except(['transactions.index']);
+    // Ganti 'transactions.index' menjadi 'dashboard' agar redirect setelah CRUD kembali ke halaman utama
+    Route::resource('transactions', TransactionController::class)->except(['index']);
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+
 
     // Categories
     Route::resource('categories', CategoryController::class)->except(['show']);
@@ -48,4 +51,11 @@ Route::middleware('auth')->group(function () {
     // Settings
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    // Prediction 
+    Route::get('/predict-expense', [PredictionController::class, 'predict'])->name('expense.predict');
+
 });
+
+// --- RUTE UNTUK TESTING (DI LUAR AUTH) ---
+Route::get('/test-libs', [PredictionController::class, 'testLibraries']);

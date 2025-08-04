@@ -31,6 +31,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-md-6 col-lg-3">
                     <div class="card bg-dark-2 h-100 p-3">
                         <div class="d-flex align-items-center">
@@ -65,6 +66,21 @@
                     </div>
                 </div>
             </div>
+            <div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark-2">
+            <div class="card-body p-4 text-center">
+                <h5 class="card-title"><i class="fas fa-magic me-2"></i>Prediksi Bulan Depan</h5>
+                <div id="prediction-result" class="mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-2">Menganalisis data pengeluaranmu...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
             <div class="row g-4">
                 <!-- Kebiasaan Hari Ini & Transaksi Terakhir -->
@@ -188,6 +204,39 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Fungsi untuk mengambil dan menampilkan prediksi
+    function fetchPrediction() {
+        fetch('{{ route('expense.predict') }}')
+            .then(response => response.json())
+            .then(data => {
+                const predictionDiv = document.getElementById('prediction-result');
+                
+                // --- PERBAIKAN DI SINI ---
+                if (data.error) {
+                    // Jika ada pesan spesifik, tampilkan. Jika tidak, tampilkan errornya.
+                    let errorMessage = data.prediction_text || data.error;
+                    predictionDiv.innerHTML = `<p class="text-warning">${errorMessage}</p>`;
+                } else {
+                    let resultHtml = `
+                        <p class="fs-5 text-gradient">${data.prediction_text}</p>
+                        <p class="text-muted mb-0">Prediksi Pengeluaran: <strong>Rp ${new Intl.NumberFormat('id-ID').format(data.predicted_expense)}</strong></p>
+                    `;
+                    predictionDiv.innerHTML = resultHtml;
+                }
+            })
+            .catch(error => {
+                const predictionDiv = document.getElementById('prediction-result');
+                predictionDiv.innerHTML = `<p class="text-danger">Gagal memuat prediksi. Silakan coba lagi nanti.</p>`;
+                console.error('Error:', error);
+            });
+    }
+
+    // Panggil fungsi saat halaman dimuat
+    fetchPrediction();
 });
 </script>
 @endpush
