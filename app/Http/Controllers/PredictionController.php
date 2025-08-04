@@ -18,25 +18,20 @@ class PredictionController extends Controller
         $transactionsJson = $user->transactions()->select('date', 'type', 'amount')->get()->toJson();
 
         try {
-            // --- PATH SUDAH DIPERBARUI ---
-            // Menggunakan path absolut ke instalasi Python Anda yang benar.
-            $pythonPath = 'C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python313\\python.exe';
+            // --- PERBAIKAN UNTUK DEPLOYMENT ---
+            // Gunakan 'python3' yang merupakan perintah standar di server Linux.
+            // Ini juga akan berfungsi di Windows jika Python ditambahkan ke PATH dengan benar.
+            $pythonPath = 'python3';
+            
             $scriptPath = app_path('scripts/predict_expense.py');
 
-            // Proses dibuat tanpa argumen, data akan dikirim via STDIN.
             $process = new Process([$pythonPath, $scriptPath]);
-            
-            // Mengirim data transaksi melalui Standard Input (STDIN).
             $process->setInput($transactionsJson);
-            
-            // Menjalankan proses.
             $process->mustRun();
 
-            // Mendapatkan output dari proses.
             $output = $process->getOutput();
             $prediction = json_decode($output, true);
             
-            // Jika script Python mengembalikan pesan error, tampilkan.
             if (isset($prediction['error'])) {
                 return response()->json($prediction, 422);
             }
@@ -44,14 +39,12 @@ class PredictionController extends Controller
             return response()->json($prediction);
             
         } catch (ProcessFailedException $exception) {
-            // Error jika prosesnya sendiri gagal dijalankan (misal: path salah, permission denied).
             return response()->json([
                 'error' => 'Gagal total menjalankan script Python.',
                 'message' => $exception->getMessage(),
                 'details' => $exception->getProcess()->getErrorOutput()
             ], 500);
         } catch (\Exception $e) {
-            // Menangkap error lainnya.
             return response()->json([
                 'error' => 'Terjadi kesalahan tidak terduga di server.',
                 'message' => $e->getMessage()
