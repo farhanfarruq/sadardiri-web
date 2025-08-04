@@ -206,37 +206,68 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Fungsi untuk mengambil dan menampilkan prediksi
-    function fetchPrediction() {
-        fetch('{{ route('expense.predict') }}')
+    const predictionDiv = document.getElementById('prediction-result');
+
+    function calculateAndShowPrediction() {
+        // Panggil route baru untuk mendapatkan data mentah
+        fetch('{{ route('expense.data') }}')
             .then(response => response.json())
-            .then(data => {
-                const predictionDiv = document.getElementById('prediction-result');
-                
-                // --- PERBAIKAN DI SINI ---
-                if (data.error) {
-                    // Jika ada pesan spesifik, tampilkan. Jika tidak, tampilkan errornya.
-                    let errorMessage = data.prediction_text || data.error;
-                    predictionDiv.innerHTML = `<p class="text-warning">${errorMessage}</p>`;
-                } else {
-                    let resultHtml = `
-                        <p class="fs-5 text-gradient">${data.prediction_text}</p>
-                        <p class="text-muted mb-0">Prediksi Pengeluaran: <strong>Rp ${new Intl.NumberFormat('id-ID').format(data.predicted_expense)}</strong></p>
-                    `;
-                    predictionDiv.innerHTML = resultHtml;
+            .then(transactions => {
+                if (transactions.length === 0) {
+                    predictionDiv.innerHTML = `<p class="text-muted">Belum ada data pengeluaran.</p>`;
+                    return;
                 }
+
+                // 1. Olah data: Kelompokkan pengeluaran per bulan
+                const monthlyExpenses = {};
+                transactions.forEach(t => {
+                    const date = new Date(t.date);
+                    // Buat key 'YYYY-MM'
+                    const monthKey = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2);
+                    monthlyExpenses[monthKey] = (monthlyExpenses[monthKey] || 0) + parseFloat(t.amount);
+                });
+
+                // 2. Ubah data menjadi format yang bisa dibaca oleh library regresi
+                // Formatnya: [[0, 500000], [1, 750000], [2, 600000]]
+                const dataPoints = Object.values(monthlyExpenses).map((amount, index) => [index, amount]);
+
+                // 3. Pastikan data cukup untuk prediksi
+                if (dataPoints.length < 2) {
+                    predictionDiv.innerHTML = `<p class="text-warning">Butuh setidaknya 2 bulan data pengeluaran untuk bisa membuat prediksi.</p>`;
+                    return;
+                }
+
+                // 4. Hitung prediksi menggunakan library
+                const result = regression.linear(dataPoints);
+                const nextMonthIndex = dataPoints.length;
+                const prediction = result.predict(nextMonthIndex);
+                const predictedAmount = prediction[1]; // Hasil prediksi ada di index 1
+
+                // 5. Tampilkan hasil
+                const averageExpense = dataPoints.reduce((sum, point) => sum + point[1], 0) / dataPoints.length;
+                let prediction_text = "Pengeluaran bulan depanmu tampaknya akan aman terkendali. 👍";
+                if (predictedAmount > averageExpense * 1.1) {
+                    prediction_text = "Hati-hati, bulan depan kamu berpotensi overbudget! 😟";
+                }
+
+                let resultHtml = `
+                    <p class="fs-5 text-gradient">${prediction_text}</p>
+                    <p class="text-muted mb-0">Prediksi Pengeluaran: <strong>Rp ${new Intl.NumberFormat('id-ID').format(predictedAmount.toFixed(0))}</strong></p>
+                `;
+                predictionDiv.innerHTML = resultHtml;
+
             })
             .catch(error => {
-                const predictionDiv = document.getElementById('prediction-result');
-                predictionDiv.innerHTML = `<p class="text-danger">Gagal memuat prediksi. Silakan coba lagi nanti.</p>`;
+                predictionDiv.innerHTML = `<p class="text-danger">Gagal memuat data prediksi.</p>`;
                 console.error('Error:', error);
             });
     }
 
     // Panggil fungsi saat halaman dimuat
-    fetchPrediction();
+    calculateAndShowPrediction();
 });
 </script>
 @endpush

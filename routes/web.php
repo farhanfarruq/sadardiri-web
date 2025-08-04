@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
 
     // Prediction 
     Route::get('/predict-expense', [PredictionController::class, 'predict'])->name('expense.predict');
+    Route::get('/transaction-data', [PredictionController::class, 'getTransactionData'])->name('expense.data');
 
 });
 
